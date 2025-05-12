@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Customer = mongoose.model('customers');
 const Segment = mongoose.model('Segment');
+const Customer = mongoose.model('Customer');
 const logger = require('../utils/logger');
 
 /**

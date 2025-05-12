@@ -2,7 +2,19 @@ const Redis = require('ioredis');
 const mongoose = require('mongoose');
 const Campaign = mongoose.model('Campaign');
 const Segment = mongoose.model('Segment');
-const Customer = mongoose.model('customers');
+const Customer = mongoose.model('Customer');
+
+// Define and register the CommunicationLog schema
+const communicationLogSchema = new mongoose.Schema({
+    // Define the schema fields here
+    message: String,
+    timestamp: Date,
+    status: String,
+    // Add other fields as necessary
+});
+
+mongoose.model('CommunicationLog', communicationLogSchema);
+
 const CommunicationLog = mongoose.model('CommunicationLog');
 const config = require('../config');
 const logger = require('../utils/logger');

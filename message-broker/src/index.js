@@ -1,10 +1,17 @@
 const Redis = require('ioredis');
 const mongoose = require('mongoose');
+require('./models/customer.model'); // Register Customer model (local)
+require('./models/segment.model'); // Register Segment model (local)
+require('./models/campaign.model'); // Register Campaign model (local)
+require('./models/communicationLog.model'); // Register CommunicationLog model (local)
 const config = require('./config');
 const logger = require('./utils/logger');
 const customerConsumer = require('./consumers/customerConsumer');
 const campaignConsumer = require('./consumers/campaignConsumer');
 const deliveryReceiptConsumer = require('./consumers/deliveryReceiptConsumer');
+
+// Set strictQuery to true to suppress deprecation warning
+mongoose.set('strictQuery', true);
 
 // Connect to MongoDB
 mongoose
