@@ -56,11 +56,11 @@ const Navbar = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="flex items-center">
-                <span className="ml-2 text-xl font-semibold text-gray-900">AuraCRM</span>
+                {/* <span className="ml-2 text-xl font-semibold text-gray-900">        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AuraCRM</span> */}
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
-              <h1 className="text-lg font-medium text-gray-800">{getPageTitle()}</h1>
+              <h1 className="text-lg font-medium text-gray-800">&nbsp;&nbsp;{getPageTitle()}</h1>
             </div>
           </div>
 
