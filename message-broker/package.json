@@ -1,0 +1,21 @@
+{
+  "name": "aura-crm-message-broker",
+  "version": "1.0.0",
+  "description": "Message broker service for Aura CRM",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "author": "Rajul Mishra",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ioredis": "^5.3.0",
+    "mongoose": "^6.8.0",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
