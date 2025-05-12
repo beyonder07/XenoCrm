@@ -9,6 +9,7 @@ import { SegmentBuilderProvider } from '@context/SegmentBuilderContext';
 // Common Components
 import Navbar from '@components/common/Navbar';
 import Sidebar from '@components/common/Sidebar';
+import MobileNav from '@components/common/MobileNav';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import AuthGuard from '@components/auth/AuthGuard';
 
@@ -41,10 +42,22 @@ function App() {
         <div className="min-h-screen bg-gray-50">
           {!isAuthPage && <Navbar />}
           
-          <div className="flex">
-            {!isAuthPage && <Sidebar />}
+          <div className="flex flex-col lg:flex-row">
+            {!isAuthPage && (
+              <>
+                {/* Desktop Sidebar */}
+                <div className="hidden lg:block lg:fixed lg:inset-y-0 lg:left-0 lg:z-30">
+                  <Sidebar />
+                </div>
+                
+                {/* Mobile Navigation */}
+                <div className="lg:hidden">
+                  <MobileNav />
+                </div>
+              </>
+            )}
             
-            <main className={`flex-1 ${!isAuthPage ? 'pt-16 pl-64' : ''}`}>
+            <main className={`flex-1 ${!isAuthPage ? 'lg:pl-64 pt-16 pb-16 lg:pb-0' : ''} min-h-screen`}>
               <AnimatePresence mode="wait">
                 <Suspense fallback={
                   <div className="flex h-screen items-center justify-center">

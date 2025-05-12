@@ -1,12 +1,51 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  // Check if we're on mobile and handle resize
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (mobile) {
+        setCollapsed(true);
+      }
+    };
+
+    // Handle sidebar toggle from navbar
+    const handleSidebarToggle = (event) => {
+      setIsOpen(event.detail.isOpen);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    window.addEventListener('toggleSidebar', handleSidebarToggle);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('toggleSidebar', handleSidebarToggle);
+    };
+  }, []);
+
+  // Close sidebar when route changes on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setIsOpen(false);
+    }
+  }, [location.pathname, isMobile]);
 
   const toggleSidebar = () => {
-    setCollapsed(!collapsed);
+    if (isMobile) {
+      setIsOpen(!isOpen);
+    } else {
+      setCollapsed(!collapsed);
+    }
   };
 
   const sidebarWidth = collapsed ? 'w-16' : 'w-64';
@@ -62,46 +101,66 @@ const Sidebar = () => {
   ];
 
   return (
-    <motion.div 
-      className={`bg-gray-900 text-white h-screen fixed left-0 top-0 transition-all duration-300 ${sidebarWidth} overflow-hidden pt-16`}
-      layout
-    >
-      <button 
-        onClick={toggleSidebar}
-        className="absolute top-6 right-2 text-white p-1 rounded-full hover:bg-gray-700 focus:outline-none"
+    <AnimatePresence>
+      <motion.div 
+        className={`bg-gray-900 text-white h-screen transition-all duration-300 ${sidebarWidth} overflow-hidden pt-16 ${
+          isMobile 
+            ? 'fixed inset-y-0 left-0 z-40 transform' 
+            : 'lg:relative'
+        } ${
+          isMobile && !isOpen 
+            ? '-translate-x-full' 
+            : 'translate-x-0'
+        }`}
+        layout
       >
-        {collapsed ? (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-          </svg>
-        ) : (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg>
-        )}
-      </button>
+        <button 
+          onClick={toggleSidebar}
+          className="absolute top-6 right-2 text-white p-1 rounded-full hover:bg-gray-700 focus:outline-none lg:block hidden"
+        >
+          {collapsed ? (
+            <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+          ) : (
+            <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          )}
+        </button>
 
-      <div className="mt-8">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => 
-              `flex items-center py-3 px-4 ${collapsed ? 'justify-center' : 'justify-start'} transition-colors duration-200 ${
-                isActive ? 'bg-purple-700 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-              }`
-            }
-          >
-            <span className="flex-shrink-0">{item.icon}</span>
-            <motion.span 
-              className={`ml-3 font-medium text-sm ${menuTextClasses} transition-all duration-300`}
+        <div className="mt-8">
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => 
+                `flex items-center py-3 px-4 ${collapsed ? 'justify-center' : 'justify-start'} transition-colors duration-200 ${
+                  isActive ? 'bg-purple-700 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                }`
+              }
+              onClick={() => isMobile && setIsOpen(false)}
             >
-              {item.name}
-            </motion.span>
-          </NavLink>
-        ))}
-      </div>
-    </motion.div>
+              <span className="flex-shrink-0">{item.icon}</span>
+              <motion.span 
+                className={`ml-3 font-medium text-sm ${menuTextClasses} transition-all duration-300`}
+              >
+                {item.name}
+              </motion.span>
+            </NavLink>
+          ))}
+        </div>
+      </motion.div>
+      {isMobile && isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.5 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black z-30 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </AnimatePresence>
   );
 };
 
