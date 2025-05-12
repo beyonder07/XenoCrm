@@ -67,7 +67,7 @@ const Dashboard = () => {
         setStats({
           totalCustomers: customerStats.totalCustomers,
           activeCampaigns,
-          deliveryRate,
+          deliveryRate: Number(deliveryRate).toFixed(2),
           totalSegments: 8
         });
         
