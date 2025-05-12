@@ -235,32 +235,33 @@ const defaultRules = {
   };
 
   // Rule Builder sub-component
-  const RuleBuilder = ({ rule, index, onUpdate, onRemove }) => {
-    const valueChangeTimer = useRef(null); // Declare valueChangeTimer using useRef
-
+  const RuleBuilder = React.memo(({ rule, index, onUpdate, onRemove }) => {
+    const valueChangeTimer = useRef(null);
+    const inputRef = useRef(null);
+  
     // Get selected field details
     const selectedField = fieldOptions.find(f => f.value === rule.field) || { type: 'text' };
-    
+  
     // Get operator options based on field type
     const operatorOptions = getOperatorOptions(selectedField.type);
-
+  
     // Handle field change
-  // Handle field change
-const handleFieldChange = (e) => {
-    const fieldValue = e.target.value;
-    const fieldType = fieldOptions.find(f => f.value === fieldValue)?.type || 'text';
-    
-    // Don't set an operator if no field is selected
-    const defaultOperator = fieldValue ? 
-      (getOperatorOptions(fieldType)[0]?.value || 'equals') : '';
-    
-    onUpdate({
-      ...rule,
-      field: fieldValue,
-      operator: defaultOperator,
-      value: '' // Reset value when field changes
-    }, index);
-  };
+    const handleFieldChange = (e) => {
+      const fieldValue = e.target.value;
+      const fieldType = fieldOptions.find(f => f.value === fieldValue)?.type || 'text';
+  
+      const defaultOperator = fieldValue
+        ? getOperatorOptions(fieldType)[0]?.value || 'equals'
+        : '';
+  
+      onUpdate({
+        ...rule,
+        field: fieldValue,
+        operator: defaultOperator,
+        value: ''
+      }, index);
+    };
+  
     // Handle operator change
     const handleOperatorChange = (e) => {
       onUpdate({
@@ -268,32 +269,38 @@ const handleFieldChange = (e) => {
         operator: e.target.value
       }, index);
     };
-
+  
     // Handle value change
-   // In SegmentBuilder.js - modify to add input debouncing
-const handleValueChange = (e) => {
-    const newValue = e.target.value;
-
-    // Clear the previous timer
-    if (valueChangeTimer.current) {
-      clearTimeout(valueChangeTimer.current);
-    }
-
-    // Update the UI immediately for responsiveness
-    onUpdate({
-      ...rule,
-      value: newValue,
-    }, index);
-
-    // Delay the API call
-    valueChangeTimer.current = setTimeout(() => {
+    const handleValueChange = (e) => {
+      const newValue = e.target.value;
+  
+      if (valueChangeTimer.current) {
+        clearTimeout(valueChangeTimer.current);
+      }
+  
       onUpdate({
         ...rule,
         value: newValue,
       }, index);
-    }, 1000); // 1-second debounce
-  };
-
+  
+      valueChangeTimer.current = setTimeout(async () => {
+        try {
+          await segmentService.previewSegment({
+            ...rule,
+            value: newValue,
+          });
+        } catch (error) {
+          console.error('Error sending value to backend:', error);
+        }
+      }, 500);
+    };
+  
+    useEffect(() => {
+      if (inputRef.current && document.activeElement !== inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, [rule.value]);
+  
     return (
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -303,7 +310,6 @@ const handleValueChange = (e) => {
         className="flex items-center gap-2 mb-3"
       >
         <div className="flex-1 grid grid-cols-12 gap-2">
-          {/* Field selector */}
           <div className="col-span-12 sm:col-span-4">
             <select
               value={rule.field || ''}
@@ -319,8 +325,7 @@ const handleValueChange = (e) => {
               ))}
             </select>
           </div>
-
-          {/* Operator selector */}
+  
           <div className="col-span-12 sm:col-span-3">
             <select
               value={rule.operator || ''}
@@ -336,10 +341,10 @@ const handleValueChange = (e) => {
               ))}
             </select>
           </div>
-
-          {/* Value input */}
+  
           <div className="col-span-12 sm:col-span-5">
             <input
+              ref={inputRef}
               type={selectedField.type === 'number' ? 'number' : 'text'}
               value={rule.value || ''}
               onChange={handleValueChange}
@@ -349,9 +354,8 @@ const handleValueChange = (e) => {
             />
           </div>
         </div>
-
-        {/* Remove button */}
-        {!disabled && rules.conditions.length > 1 && (
+  
+        {!disabled && (
           <button
             type="button"
             onClick={() => onRemove(index)}
@@ -363,7 +367,15 @@ const handleValueChange = (e) => {
         )}
       </motion.div>
     );
-  };
+  }, (prevProps, nextProps) => {
+    // Prevent re-render if props haven't changed
+    return (
+      prevProps.rule === nextProps.rule &&
+      prevProps.index === nextProps.index &&
+      prevProps.disabled === nextProps.disabled
+    );
+  });
+  
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
