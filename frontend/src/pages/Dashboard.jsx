@@ -308,7 +308,7 @@ const Dashboard = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {recentCampaigns.map((campaign) => (
-                  <tr key={campaign.id}>
+                  <tr key={campaign._id}>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{campaign.name}</td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{campaign.status}</td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{campaign.sent}</td>

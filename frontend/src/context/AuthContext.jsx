@@ -82,16 +82,19 @@ export const AuthProvider = ({ children }) => {
   // Email/password login handler
   const handleLogin = async (credentials) => {
     try {
-      setLoading(true);
+      setLoading(true); // Show loader while login is in progress
       const userData = await authService.login(credentials);
       setUser(userData);
+      console.log('User after login:', userData); // DEBUG
       toast.success('Successfully logged in!');
-      navigate('/');
+      // Removed navigate('/') from here to avoid race condition
     } catch (error) {
       console.error('Login error:', error);
+      // Optionally, show a toast or set an error state here
+      // toast.error('Login failed. Please check your credentials.');
       throw error; // Let the form handle the error
     } finally {
-      setLoading(false);
+      setLoading(false); // Hide loader after login attempt
     }
   };
 
@@ -101,6 +104,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const newUser = await authService.register(userData);
       setUser(newUser);
+      console.log('User after register:', newUser); // DEBUG
       toast.success('Account created successfully!');
       navigate('/');
     } catch (error) {

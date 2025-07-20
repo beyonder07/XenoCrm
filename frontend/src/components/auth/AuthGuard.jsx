@@ -10,6 +10,9 @@ import LoadingSpinner from '@components/common/LoadingSpinner';
 const AuthGuard = () => {
   const { user, loading } = useContext(AuthContext);
 
+  // DEBUG: Log auth state
+  console.log('AuthGuard:', { user, loading });
+
   // Show loading spinner while checking authentication
   if (loading) {
     return (

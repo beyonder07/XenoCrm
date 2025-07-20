@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-text;
+  }
+}
+
+/* Remove all the default styles that might be conflicting */
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all duration-200;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-all duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-background text-text border border-primary px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-all duration-200;
+  }
+
+  .input-primary {
+    @apply w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-card rounded-xl shadow-sm p-6;
+  }
+
+  .nav-link {
+    @apply text-text hover:text-primary transition-colors duration-200;
+  }
+
+  .nav-link.active {
+    @apply text-primary font-medium;
+  }
+}
