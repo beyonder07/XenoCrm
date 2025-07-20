@@ -6,7 +6,8 @@ A modern, AI-powered Customer Relationship Management (CRM) platform designed to
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![React](https://img.shields.io/badge/React-18.2.0-blue)
 ![Node](https://img.shields.io/badge/Node-18.x-green)
-🚀 Live Deployment
+
+##🚀 Live Deployment
 Experience the AI-powered CRM in action!
 
 🌐 Live Preview: https://xenocrm.pages.dev/login
