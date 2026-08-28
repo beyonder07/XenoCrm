@@ -39,3 +39,7 @@
 ### 8/18/2026 - Redis Caching & Pub-Sub Mechanisms
 - Completed learning segment on: *Configured and optimized local background worker schedules.*
 - Sandbox action completed: `Refined README stats layout with progress bars.`
+
+### 8/28/2026 - Error Boundaries and Global Exception Handlers
+- Completed learning segment on: *Configured and optimized local background worker schedules.*
+- Sandbox action completed: `Added new validation check for input safety constraints.`
